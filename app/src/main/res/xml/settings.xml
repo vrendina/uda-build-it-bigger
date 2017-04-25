@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="@string/sp_key_joke_source"
+        android:title="Joke Data Source"
+        android:entries="@array/joke_source_names"
+        android:entryValues="@array/joke_source_keys"
+        android:defaultValue="@string/key_joke_source_gce"/>
+</PreferenceScreen>

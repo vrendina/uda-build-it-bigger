@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="joke_source_names">
+        <item>Local Java Library</item>
+        <item>Google Cloud Endpoints</item>
+    </string-array>
+
+    <string-array name="joke_source_keys">
+        <item>@string/key_joke_source_local</item>
+        <item>@string/key_joke_source_gce</item>
+    </string-array>
+</resources>
