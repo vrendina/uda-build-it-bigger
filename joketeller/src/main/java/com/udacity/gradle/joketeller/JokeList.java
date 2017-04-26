@@ -10,16 +10,16 @@ public class JokeList {
     public static ArrayList<Joke> jokes = new ArrayList<>();
 
     static {
-        jokes.add(new Joke("Did you hear about the guy who invented lifesavers?",
+        jokes.add(Joke.create("Did you hear about the guy who invented lifesavers?",
                 "They said he made a mint!"));
 
-        jokes.add(new Joke("What do you call a fake noodle?",
+        jokes.add(Joke.create("What do you call a fake noodle?",
                 "An impasta!"));
 
-        jokes.add(new Joke("I just watched a program about beavers.",
+        jokes.add(Joke.create("I just watched a program about beavers.",
                 "It was the best dam program I've seen."));
 
-        jokes.add(new Joke("Want to hear a joke about paper?",
+        jokes.add(Joke.create("Want to hear a joke about paper?",
                 "It's tearable."));
     }
 }

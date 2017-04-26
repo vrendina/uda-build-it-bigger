@@ -15,14 +15,14 @@ public class JokeTellerTest {
         String punchLine = "They said he made a mint!";
 
         ArrayList<Joke> jokes = new ArrayList<>();
-        jokes.add(new Joke(setup, punchLine));
+        jokes.add(Joke.create(setup, punchLine));
 
         JokeTeller jokeTeller = new JokeTeller(jokes);
 
         Joke testJoke = jokeTeller.tellJoke();
 
-        assertEquals(setup, testJoke.setup);
-        assertEquals(punchLine, testJoke.punchLine);
+        assertEquals(setup, testJoke.setup());
+        assertEquals(punchLine, testJoke.punchLine());
     }
 
     @Test
@@ -30,8 +30,8 @@ public class JokeTellerTest {
         JokeTeller jokeTeller = new JokeTeller();
         Joke joke = jokeTeller.tellJoke();
 
-        assertNotNull(joke.setup);
-        assertNotNull(joke.punchLine);
+        assertNotNull(joke.setup());
+        assertNotNull(joke.punchLine());
     }
 
 }

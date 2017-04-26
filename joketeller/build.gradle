@@ -1,7 +1,14 @@
+plugins {
+    id 'net.ltgt.apt' version '0.10'
+}
+
 apply plugin: 'java'
+apply plugin: 'idea'
 
 dependencies {
-    //compile fileTree(dir: 'libs', include: ['*.jar'])
+    compileOnly 'com.google.auto.value:auto-value:1.2'
+    apt         'com.google.auto.value:auto-value:1.2'
+
     testCompile 'junit:junit:4.12'
 }
 

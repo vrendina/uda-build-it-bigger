@@ -1,19 +1,16 @@
 package com.udacity.gradle.joketeller;
 
+import com.google.auto.value.AutoValue;
+
 import java.io.Serializable;
 
-public class Joke implements Serializable {
+@AutoValue
+abstract class Joke implements Serializable {
+    abstract String setup();
+    abstract String punchLine();
 
-    public String setup;
-    public String punchLine;
-
-    public Joke(String setup, String punchLine) {
-        this.setup = setup;
-        this.punchLine = punchLine;
+    static Joke create(String setup, String punchLine) {
+        return new AutoValue_Joke(setup, punchLine);
     }
 
-    @Override
-    public String toString() {
-        return "Setup: '" + setup + "' Punch-line: '" + punchLine + "'";
-    }
 }
