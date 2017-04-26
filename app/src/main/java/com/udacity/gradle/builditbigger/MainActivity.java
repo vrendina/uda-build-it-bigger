@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.udacity.gradle.joketeller.Joke;
 import com.udacity.gradle.joketeller.JokeTeller;
+import com.udacity.gradle.jokeviewer.JokeViewerActivity;
 
 import timber.log.Timber;
 
@@ -152,6 +153,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         Timber.d("Telling joke from remote gce source...");
                         joke = new Joke("test", "remote");
 
+                        while(joke == lastJoke && retryCount < retryLimit) {
+                            Timber.d("Got the same joke, looking for fresh material!");
+                            joke = loadLocalData();
+                            retryCount++;
+                        }
+
                         break;
                 }
 
@@ -164,7 +171,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoadFinished(Loader<Joke> loader, Joke data) {
         Timber.d("Got joke data -- " + data.toString());
 
-        lastJoke = data;
+        // If we haven't seen this joke yet, lets display it
+        if(lastJoke == null || !lastJoke.equals(data)) {
+            lastJoke = data;
+
+            Intent jokeViewerIntent = new Intent(this, JokeViewerActivity.class);
+            jokeViewerIntent.putExtra(JokeViewerActivity.JOKE_KEY, data);
+            startActivity(jokeViewerIntent);
+        }
+
         toggleLoadingIndicator(false);
     }
 

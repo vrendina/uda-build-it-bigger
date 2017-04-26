@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Joke Viewer</string>
+    <string name="joke_viewer_title">Joke Viewer</string>
+    <string name="show_punch_line_button">Show Punch Line</string>
+
+    <string name="joke_viewer_error">Error! Could not display joke.</string>
+    <string name="joke_viewer_error_punch_line">No joke, seriously something went wrong.</string>
+</resources>
