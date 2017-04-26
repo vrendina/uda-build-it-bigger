@@ -11,4 +11,5 @@
     <string name="sp_key_joke_source">jokeSource</string>
     <string name="key_joke_source_local">local</string>
     <string name="key_joke_source_gce">gce</string>
+    <string name="default_joke_source">@string/key_joke_source_gce</string>
 </resources>

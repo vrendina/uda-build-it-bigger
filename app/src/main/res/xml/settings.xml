@@ -5,5 +5,5 @@
         android:title="Joke Data Source"
         android:entries="@array/joke_source_names"
         android:entryValues="@array/joke_source_keys"
-        android:defaultValue="@string/key_joke_source_gce"/>
+        android:defaultValue="@string/default_joke_source"/>
 </PreferenceScreen>
