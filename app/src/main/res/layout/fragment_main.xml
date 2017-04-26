@@ -9,20 +9,41 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivityFragment">
 
-    <TextView
-        android:id="@+id/instructions_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/instructions" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/instructions_text_view"
-        android:onClick="tellJoke"
-        android:text="@string/button_text"
 
-        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/instructions_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/instructions" />
+
+        <Button
+            android:id="@+id/btn_tell_joke"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="tellJoke"
+            android:text="@string/button_text" />
+
+        <ProgressBar
+        android:id="@+id/pb_loading_joke"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_loading_joke"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading_joke"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
