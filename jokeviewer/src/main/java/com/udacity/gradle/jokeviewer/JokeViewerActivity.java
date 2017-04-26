@@ -38,8 +38,8 @@ public class JokeViewerActivity extends AppCompatActivity {
             jokeSetupTextView.setText(R.string.joke_viewer_error);
             jokePunchLineTextView.setText(R.string.joke_viewer_error_punch_line);
         } else {
-            jokeSetupTextView.setText(joke.setup);
-            jokePunchLineTextView.setText(joke.punchLine);
+            jokeSetupTextView.setText(joke.setup());
+            jokePunchLineTextView.setText(joke.punchLine());
         }
     }
 

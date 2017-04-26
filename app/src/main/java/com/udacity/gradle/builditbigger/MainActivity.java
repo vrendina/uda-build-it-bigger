@@ -141,27 +141,30 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         Timber.d("Telling joke from local java library...");
                         joke = loadLocalData();
 
-                        while(joke == lastJoke && retryCount < retryLimit) {
-                            Timber.d("Got the same joke, looking for fresh material!");
-                            joke = loadLocalData();
-                            retryCount++;
+                        if(lastJoke != null) {
+                            while (joke.equals(lastJoke) && retryCount < retryLimit) {
+                                Timber.d("Got the same joke, looking for fresh material!");
+                                joke = loadLocalData();
+                                retryCount++;
+                            }
                         }
 
                         break;
 
                     case TASK_REMOTE_ID:
                         Timber.d("Telling joke from remote gce source...");
-                        joke = new Joke("test", "remote");
+                        joke = Joke.create("Remote Test", "Yep");
 
-                        while(joke == lastJoke && retryCount < retryLimit) {
-                            Timber.d("Got the same joke, looking for fresh material!");
-                            joke = loadLocalData();
-                            retryCount++;
+                        if(lastJoke != null) {
+                            while (joke.equals(lastJoke) && retryCount < retryLimit) {
+                                Timber.d("Got the same joke, looking for fresh material!");
+                                joke = Joke.create("Remote Test", "Yep");
+                                retryCount++;
+                            }
                         }
 
                         break;
                 }
-
                 return joke;
             }
         };
