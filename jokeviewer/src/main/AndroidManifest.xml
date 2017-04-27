@@ -5,9 +5,10 @@
 
     <application
         android:label="@string/app_name"
-        android:supportsRtl="true">
-        <activity android:name=".JokeViewerActivity"
-            android:label="@string/joke_viewer_title"/>
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat">
+        <activity android:name="com.udacity.gradle.jokeviewer.JokeViewerActivity"
+            android:label="@string/joke_viewer_title" />
     </application>
 
 </manifest>
