@@ -9,9 +9,7 @@ libraries that are automatically incorporated into an Android application build.
 
 ### Development Tasks
 
-> **Required** Your first task is to create a Java library that provides jokes. Create a new
-  Gradle Java project either using the Android Studio wizard, or by hand. Then
-  introduce a project dependency between your app and the new Java Library.
+> **Required** Your first task is to create a Java library that provides jokes.
 
 + Java library `JokeTeller` was added to the project.
 + The `JokeTeller` library incorporates Google's `AutoValue` for creating the serializable value class `Joke`. 
