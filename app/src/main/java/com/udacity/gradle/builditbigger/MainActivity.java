@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private Joke loadLocalData() {
+        Timber.d("Telling joke from local java library...");
         // Artificially inflate the time it takes to get a local joke
         try {
             Thread.sleep(1000);
@@ -137,9 +138,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private Joke loadRemoteData() {
+        Timber.d("Telling joke from remote gce source...");
         // Artificially inflate the time it takes to get a "remote" joke
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -169,42 +171,32 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public Loader<Joke> onCreateLoader(final int id, Bundle args) {
         return new AsyncTaskLoader<Joke>(this) {
+
+            private Joke loadJoke() {
+                Joke joke = null;
+                switch(id) {
+                    case TASK_LOCAL_ID:
+                        joke = loadLocalData();
+                    break;
+                    case TASK_REMOTE_ID:
+                        joke = loadRemoteData();
+                }
+                return joke;
+            }
+
             @Override
             public Joke loadInBackground() {
-
-                Joke joke = null;
-
                 int retryCount = 0;
 
-                switch (id) {
-                    case TASK_LOCAL_ID:
-                        Timber.d("Telling joke from local java library...");
-                        joke = loadLocalData();
-
-                        if(lastJoke != null) {
-                            while (joke.equals(lastJoke) && retryCount < RETRY_LIMIT) {
-                                Timber.d("Got the same joke, looking for fresh material!");
-                                joke = loadLocalData();
-                                retryCount++;
-                            }
-                        }
-
-                        break;
-
-                    case TASK_REMOTE_ID:
-                        Timber.d("Telling joke from remote gce source...");
-                        joke = loadRemoteData();
-
-                        if(lastJoke != null) {
-                            while (joke.equals(lastJoke) && retryCount < RETRY_LIMIT) {
-                                Timber.d("Got the same joke, looking for fresh material!");
-                                joke = loadRemoteData();
-                                retryCount++;
-                            }
-                        }
-
-                        break;
+                Joke joke = loadJoke();
+                if(lastJoke != null) {
+                    while (joke.equals(lastJoke) && retryCount < RETRY_LIMIT) {
+                        Timber.d("Got the same joke, looking for fresh material!");
+                        joke = loadJoke();
+                        retryCount++;
+                    }
                 }
+
                 return joke;
             }
         };
