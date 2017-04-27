@@ -15,9 +15,19 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
+import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
+
+import com.udacity.gradle.builditbigger.backend.jokeApi.JokeApi;
+
+import com.udacity.gradle.builditbigger.backend.jokeApi.model.CloudJoke;
 import com.udacity.gradle.joketeller.Joke;
 import com.udacity.gradle.joketeller.JokeTeller;
 import com.udacity.gradle.jokeviewer.JokeViewerActivity;
+
+import java.io.IOException;
 
 import timber.log.Timber;
 
@@ -26,6 +36,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public static final int TASK_LOCAL_ID = 100;
     public static final int TASK_REMOTE_ID = 200;
+
+    // Number of times to retry if we get the same joke
+    public static final int RETRY_LIMIT = 3;
 
     public static final String LAST_JOKE_KEY = "lastJoke";
 
@@ -123,6 +136,35 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return teller.tellJoke();
     }
 
+    private Joke loadRemoteData() {
+        // Artificially inflate the time it takes to get a "remote" joke
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        JokeApi.Builder builder = new JokeApi.Builder(AndroidHttp.newCompatibleTransport(),
+                new AndroidJsonFactory(), null)
+                .setRootUrl(getString(R.string.gce_api_server_address))
+                .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
+                    @Override
+                    public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
+                        abstractGoogleClientRequest.setDisableGZipContent(true);
+                    }
+                });
+
+        JokeApi jokeService = builder.build();
+
+        try {
+            CloudJoke cloudJoke = jokeService.tellJoke().execute();
+            return Joke.create(cloudJoke.getSetup(), cloudJoke.getPunchLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     @Override
     public Loader<Joke> onCreateLoader(final int id, Bundle args) {
@@ -132,9 +174,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 Joke joke = null;
 
-                // How many times we will try to get a fresh joke if we get the same one
                 int retryCount = 0;
-                int retryLimit = 3;
 
                 switch (id) {
                     case TASK_LOCAL_ID:
@@ -142,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         joke = loadLocalData();
 
                         if(lastJoke != null) {
-                            while (joke.equals(lastJoke) && retryCount < retryLimit) {
+                            while (joke.equals(lastJoke) && retryCount < RETRY_LIMIT) {
                                 Timber.d("Got the same joke, looking for fresh material!");
                                 joke = loadLocalData();
                                 retryCount++;
@@ -153,12 +193,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                     case TASK_REMOTE_ID:
                         Timber.d("Telling joke from remote gce source...");
-                        joke = Joke.create("Remote Test", "Yep");
+                        joke = loadRemoteData();
 
                         if(lastJoke != null) {
-                            while (joke.equals(lastJoke) && retryCount < retryLimit) {
+                            while (joke.equals(lastJoke) && retryCount < RETRY_LIMIT) {
                                 Timber.d("Got the same joke, looking for fresh material!");
-                                joke = Joke.create("Remote Test", "Yep");
+                                joke = loadRemoteData();
                                 retryCount++;
                             }
                         }
