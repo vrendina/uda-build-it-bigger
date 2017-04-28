@@ -41,12 +41,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final int RETRY_LIMIT = 3;
 
     public static final String LAST_JOKE_KEY = "lastJoke";
+    public static final String LOADING_STATE_KEY = "loadingState";
 
     private TextView loadingTextView;
     private ProgressBar loadingProgressBar;
     private Button tellJokeButton;
 
     private Joke lastJoke;
+    private boolean loadingState;
+
+    private Joke cachedJoke;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +66,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if(savedInstanceState != null) {
             lastJoke = (Joke) savedInstanceState.getSerializable(LAST_JOKE_KEY);
+            loadingState = savedInstanceState.getBoolean(LOADING_STATE_KEY);
         }
+        toggleLoadingIndicator(loadingState);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        // Always save the loading state
+        outState.putBoolean(LOADING_STATE_KEY, loadingState);
+
         // Save the last joke we told so we can always get fresh material!
-        if(lastJoke != null) {
-            outState.putSerializable(LAST_JOKE_KEY, lastJoke);
-        }
+        outState.putSerializable(LAST_JOKE_KEY, lastJoke);
+
         super.onSaveInstanceState(outState);
     }
 
@@ -93,8 +101,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return super.onOptionsItemSelected(item);
     }
 
-    private void toggleLoadingIndicator(boolean show) {
-        if(show) {
+    private void toggleLoadingIndicator(boolean visible) {
+        loadingState = visible;
+        if(visible) {
             tellJokeButton.setEnabled(false);
             loadingTextView.setVisibility(View.VISIBLE);
             loadingProgressBar.setVisibility(View.VISIBLE);
@@ -204,11 +213,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 return joke;
             }
+
+            @Override
+            protected void onStartLoading() {
+                if(cachedJoke != null) {
+                    deliverResult(cachedJoke);
+                }
+            }
+
+            @Override
+            public void deliverResult(Joke data) {
+                // This method is called even when the app is put into the background so we want to cache data here
+                Timber.d("Called deliverResult");
+                cachedJoke = data;
+                super.deliverResult(data);
+            }
         };
     }
 
     @Override
     public void onLoadFinished(Loader<Joke> loader, @Nullable Joke data) {
+        // onLoadFinished is only called if the UI is visible!
+        Timber.d("Called onLoadFinished");
         if(data == null) {
             showError();
         } else {
@@ -223,12 +249,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 startActivity(jokeViewerIntent);
             }
         }
-
+        cachedJoke = null;
         toggleLoadingIndicator(false);
     }
 
     @Override
     public void onLoaderReset(Loader<Joke> loader) {
-
     }
 }
