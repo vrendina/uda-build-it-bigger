@@ -15,4 +15,6 @@
     <string name="key_joke_source_local" translatable="false">local</string>
     <string name="key_joke_source_gce" translatable="false">gce</string>
     <string name="default_joke_source" translatable="false">@string/key_joke_source_gce</string>
+
+    <string name="error_loading_joke">Error loading joke data. Is the service running?</string>
 </resources>

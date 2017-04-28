@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -103,6 +105,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
+    private void showError() {
+        Toast.makeText(this, R.string.error_loading_joke, Toast.LENGTH_LONG).show();
+    }
+
     public void tellJoke(View view) {
         toggleLoadingIndicator(true);
 
@@ -126,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Timber.d("Telling joke from local java library...");
         // Artificially inflate the time it takes to get a local joke
         try {
-            Thread.sleep(1000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -152,7 +158,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
                         abstractGoogleClientRequest.setDisableGZipContent(true);
                     }
-                });
+                })
+                .setApplicationName(getString(R.string.app_name));
 
         JokeApi jokeService = builder.build();
 
@@ -187,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 int retryCount = 0;
 
                 Joke joke = loadJoke();
-                if(lastJoke != null) {
+                if(lastJoke != null && joke != null) {
                     while (joke.equals(lastJoke) && retryCount < RETRY_LIMIT) {
                         Timber.d("Got the same joke, looking for fresh material!");
                         joke = loadJoke();
@@ -201,16 +208,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public void onLoadFinished(Loader<Joke> loader, Joke data) {
-        Timber.d("Got joke data -- " + data.toString());
+    public void onLoadFinished(Loader<Joke> loader, @Nullable Joke data) {
+        if(data == null) {
+            showError();
+        } else {
+            Timber.d("Got joke data -- " + data.toString());
+            // If we haven't seen this joke yet, lets display it
+            if (lastJoke == null || !lastJoke.equals(data)) {
 
-        // If we haven't seen this joke yet, lets display it
-        if(lastJoke == null || !lastJoke.equals(data)) {
-            lastJoke = data;
+                lastJoke = data;
 
-            Intent jokeViewerIntent = new Intent(this, JokeViewerActivity.class);
-            jokeViewerIntent.putExtra(JokeViewerActivity.JOKE_KEY, data);
-            startActivity(jokeViewerIntent);
+                Intent jokeViewerIntent = new Intent(this, JokeViewerActivity.class);
+                jokeViewerIntent.putExtra(JokeViewerActivity.JOKE_KEY, data);
+                startActivity(jokeViewerIntent);
+            }
         }
 
         toggleLoadingIndicator(false);
