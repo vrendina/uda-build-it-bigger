@@ -19,9 +19,7 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
-
 import com.udacity.gradle.builditbigger.backend.jokeApi.JokeApi;
-
 import com.udacity.gradle.builditbigger.backend.jokeApi.model.CloudJoke;
 import com.udacity.gradle.joketeller.Joke;
 import com.udacity.gradle.joketeller.JokeTeller;
@@ -162,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             CloudJoke cloudJoke = jokeService.tellJoke().execute();
             return Joke.create(cloudJoke.getSetup(), cloudJoke.getPunchLine());
         } catch (IOException e) {
-            e.printStackTrace();
+            Timber.e("Could not load data from cloud service. Is the service running?");
         }
 
         return null;
