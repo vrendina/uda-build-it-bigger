@@ -19,6 +19,7 @@
         tools:text="Did you hear about the restaurant on the moon?" />
 
     <Button
+        android:id="@+id/btn_show_punch_line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/show_punch_line_button"
