@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private boolean loadingState;
 
     private Joke cachedJoke;
+    private boolean haveResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             @Override
             protected void onStartLoading() {
-                if(cachedJoke != null) {
+                if(haveResult) {
                     deliverResult(cachedJoke);
                 }
             }
@@ -226,6 +227,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 // This method is called even when the app is put into the background so we want to cache data here
                 Timber.d("Called deliverResult");
                 cachedJoke = data;
+                haveResult = true;
+
                 super.deliverResult(data);
             }
         };
@@ -250,6 +253,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         }
         cachedJoke = null;
+        haveResult = false;
+
         toggleLoadingIndicator(false);
     }
 
