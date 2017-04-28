@@ -27,11 +27,12 @@ in isolation from the rest of the application.
 our Java library, we'll set up a Google Cloud Endpoints development server,
 and pull our jokes from there. 
 
-+ TODO
++ Added `backend` module to project that has a `JokeEndPoint`.
++ The backend service depends on the java `JokeTeller` library to obtain jokes.
 
 > **Required** Add connected tests to verify the jokes are being retrieved from the Google Cloud Enpoints server.
 
-+ TODO
++ Espresso tests added to verify that a joke is obtained and displayed from the GCE backend.
 
 > **Required** Add free and paid product flavors to your app. Remove the ad (and any
 dependencies you can) from the paid flavor.
