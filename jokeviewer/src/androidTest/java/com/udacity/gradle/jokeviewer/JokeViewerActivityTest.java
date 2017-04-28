@@ -1,8 +1,6 @@
 package com.udacity.gradle.jokeviewer;
 
-import android.content.Context;
 import android.content.Intent;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -31,7 +29,7 @@ public class JokeViewerActivityTest {
             = new ActivityTestRule<>(JokeViewerActivity.class, false, false);
 
     @Before
-    public void initializeTestDate() {
+    public void initializeTestData() {
         String setup = "How do you make a kleenex dance?";
         String punchLine = "Put a little boogie in it.";
 
@@ -51,10 +49,7 @@ public class JokeViewerActivityTest {
 
     @Test
     public void jokePunchLineIsDisplayedWhenButtonPressed() {
-        Context context = InstrumentationRegistry.getTargetContext();
-        String buttonTitle = context.getString(R.string.show_punch_line_button);
-
-        onView(allOf(withText(buttonTitle), isDisplayed())).perform(click());
+        onView(withId(R.id.btn_show_punch_line)).perform(click());
 
         onView(allOf(withId(R.id.tv_joke_punch_line), isDisplayed()))
                 .check(matches(withText(testJoke.punchLine())));
