@@ -45,7 +45,6 @@ is only compiled into the free flavor.
 
 + Created an abstract `BaseMainActivity` class and then implemented `MainActivity` differently for each
 build flavor.
-+ Espresso tests will fail when the interstitial ad is displayed!
 
 > **Optional** Add a loading indicator that is shown while the joke is being retrieved and
 disappears when the joke is ready. 
