@@ -37,7 +37,9 @@ and pull our jokes from there.
 > **Required** Add free and paid product flavors to your app. Remove the ad (and any
 dependencies you can) from the paid flavor.
 
-+ TODO
++ Created free and full product flavors. 
++ Added line `freeCompile 'com.google.firebase:firebase-ads:10.2.1'` to `build.gradle` so the ad library
+is only compiled into the free flavor.
 
 > **Optional** Add an interstitial ad to the free version.
 
@@ -50,4 +52,4 @@ disappears when the joke is ready.
 
 > **Optional** To tie it all together, create a Gradle task that: 1. Launches the GCE local development server, 2. Runs all tests, 3. Shuts the server down again
 
-+ TODO
++ Couldn't 

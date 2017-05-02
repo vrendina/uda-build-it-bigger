@@ -32,16 +32,20 @@ import java.io.IOException;
 import timber.log.Timber;
 
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Joke>{
+public abstract class BaseMainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Joke> {
 
-    public static final int TASK_LOCAL_ID = 100;
-    public static final int TASK_REMOTE_ID = 200;
+    private static final int TASK_LOCAL_ID = 100;
+    private static final int TASK_REMOTE_ID = 200;
 
     // Number of times to retry if we get the same joke
-    public static final int RETRY_LIMIT = 3;
+    private static final int RETRY_LIMIT = 3;
 
-    public static final String LAST_JOKE_KEY = "lastJoke";
-    public static final String LOADING_STATE_KEY = "loadingState";
+    // Artificially inflate the loading time for local and remote jokes to show loading indicator
+    private static final int LOADING_TIME_LOCAL = 1000;
+    private static final int LOADING_TIME_REMOTE = 1000;
+
+    private static final String LAST_JOKE_KEY = "lastJoke";
+    private static final String LOADING_STATE_KEY = "loadingState";
 
     private TextView loadingTextView;
     private ProgressBar loadingProgressBar;
@@ -52,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private Joke cachedJoke;
     private boolean haveResult;
+
+    // Implemented by the different flavors so an ad can be shown in the free flavor
+    abstract protected void showJoke(Joke joke);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Timber.d("Telling joke from local java library...");
         // Artificially inflate the time it takes to get a local joke
         try {
-            Thread.sleep(5000);
+            Thread.sleep(LOADING_TIME_LOCAL);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -155,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Timber.d("Telling joke from remote gce source...");
         // Artificially inflate the time it takes to get a "remote" joke
         try {
-            Thread.sleep(1000);
+            Thread.sleep(LOADING_TIME_REMOTE);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -192,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 switch(id) {
                     case TASK_LOCAL_ID:
                         joke = loadLocalData();
-                    break;
+                        break;
                     case TASK_REMOTE_ID:
                         joke = loadRemoteData();
                 }
@@ -244,12 +251,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Timber.d("Got joke data -- " + data.toString());
             // If we haven't seen this joke yet, lets display it
             if (lastJoke == null || !lastJoke.equals(data)) {
-
                 lastJoke = data;
-
-                Intent jokeViewerIntent = new Intent(this, JokeViewerActivity.class);
-                jokeViewerIntent.putExtra(JokeViewerActivity.JOKE_KEY, data);
-                startActivity(jokeViewerIntent);
+                showJoke(data);
             }
         }
         cachedJoke = null;
@@ -261,4 +264,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<Joke> loader) {
     }
+
+    /**
+     * Launches the JokeViewer activity with the joke passed in the parameter.
+     *
+     * @param joke Joke to display in the JokeViewer
+     */
+    public void launchJokeViewer(Joke joke) {
+        Intent jokeViewerIntent = new Intent(this, JokeViewerActivity.class);
+        jokeViewerIntent.putExtra(JokeViewerActivity.JOKE_KEY, joke);
+        startActivity(jokeViewerIntent);
+    }
+
 }

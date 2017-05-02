@@ -4,8 +4,6 @@
 
     <string name="gce_api_server_address" translatable="false">http://10.0.2.2:8080/_ah/api/</string>
 
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-
     <string name="instructions">Press the button for a punny dad joke!</string>
     <string name="button_text">Tell Joke</string>
     <string name="action_settings">Settings</string>
@@ -16,5 +14,5 @@
     <string name="key_joke_source_gce" translatable="false">gce</string>
     <string name="default_joke_source" translatable="false">@string/key_joke_source_gce</string>
 
-    <string name="error_loading_joke">Error loading joke data. Is the service running?</string>
+    <string name="error_loading_joke">Error loading joke data. Is the GCE service running?</string>
 </resources>
