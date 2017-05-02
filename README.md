@@ -43,13 +43,11 @@ is only compiled into the free flavor.
 
 > **Optional** Add an interstitial ad to the free version.
 
-+ TODO
++ Created an abstract `BaseMainActivity` class and then implemented `MainActivity` differently for each
+build flavor.
++ Espresso tests will fail when the interstitial ad is displayed!
 
 > **Optional** Add a loading indicator that is shown while the joke is being retrieved and
 disappears when the joke is ready. 
 
 + Created a `ProgressBar` that is displayed when the `AsyncTaskLoader` is retrieving a joke.
-
-> **Optional** To tie it all together, create a Gradle task that: 1. Launches the GCE local development server, 2. Runs all tests, 3. Shuts the server down again
-
-+ Couldn't 
